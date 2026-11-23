@@ -10,9 +10,17 @@ service cloud.firestore {
         && request.resource.data.hospitalVerified == false;
       allow update: if request.auth != null && request.auth.uid == uid
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          'name','bio','age','height','weight','bloodGroup','photoURL','photoSource','updatedAt'
+          'name','username','bio','age','height','weight','bloodGroup','photoURL','photoSource','donorInterested','privacy','updatedAt'
         ]);
       allow delete: if false;
+    }
+    match /bloodInventory/{itemId} {
+      allow read: if request.auth != null;
+      allow write: if false; // Administrator-controlled until hospital verification backend exists.
+    }
+    match /donationCamps/{campId} {
+      allow read: if request.auth != null;
+      allow write: if false; // Administrator-controlled demo records.
     }
   }
 }
