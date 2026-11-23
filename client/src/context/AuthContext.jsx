@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, runTransaction, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 
 const AuthContext = createContext(null);
@@ -17,9 +17,11 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     let stopProfile = () => {};
     let syncTimeout;
+    let initializingUid = null;
     const stopAuth = onAuthStateChanged(auth, current => {
       stopProfile();
       clearTimeout(syncTimeout);
+      initializingUid = null;
       setUser(current);
       setProfile(null);
       setProfileError('');
@@ -29,6 +31,24 @@ export function AuthProvider({ children }) {
       syncTimeout = setTimeout(() => { setProfileError('Firestore is taking too long to respond. Check your network and retry.'); setProfileLoading(false); }, 10000);
       stopProfile = onSnapshot(doc(db, 'users', current.uid), snapshot => {
         clearTimeout(syncTimeout);
+        if (!snapshot.exists() && initializingUid !== current.uid) {
+          initializingUid = current.uid;
+          // Only create when missing, and never overwrite an existing document.
+          runTransaction(db, async transaction => {
+            const profileRef = doc(db, 'users', current.uid);
+            const existing = await transaction.get(profileRef);
+            if (existing.exists()) return;
+            transaction.set(profileRef, {
+            uid: current.uid, name: current.displayName || '', email: current.email || '',
+            role: 'patient', username: '', bio: '', photoURL: current.photoURL || '',
+            photoSource: current.photoURL ? 'google' : 'default', hospitalVerified: false,
+            privacy: {shareHealthInfo: false}, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+            });
+          }).catch(() => {
+            // Avoid presenting a manual Create Profile control; retry via existing sync action.
+            setProfileError('Unable to initialize your profile. Please retry.');
+          });
+        }
         setProfile(snapshot.exists() ? snapshot.data() : null);
         setProfileError('');
         setProfileLoading(false);
