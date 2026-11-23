@@ -1,0 +1,19 @@
+
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDYgnHGhKGNmbyhvBTq5GhZ-qTFxrpk38c",
+  authDomain: "globinplus-anoky.firebaseapp.com",
+  projectId: "globinplus-anoky",
+  storageBucket: "globinplus-anoky.firebasestorage.app",
+  messagingSenderId: "330762058972",
+  appId: "1:330762058972:web:a2372d0fb190f6f2700819",
+  measurementId: "G-HWSF4EZ09F"
+};
+
+const app = initializeApp(firebaseConfig);
+
+export const auth = getAuth(app);
+export const db = getFirestore(app);
