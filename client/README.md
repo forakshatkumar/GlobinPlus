@@ -1,16 +1,28 @@
-# React + Vite
+# GlobinPlus — Premium Landing Page
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Responsive React + Vite + Tailwind CSS landing page for the GlobinPlus blood donation platform.
 
-Currently, two official plugins are available:
+## Get started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+cd client
+npm install
+npm run dev
+```
 
-## React Compiler
+Open the local URL printed by Vite.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Included
 
-## Expanding the ESLint configuration
+- Responsive landing page inspired by the provided design reference
+- Supplied GlobinPlus logo (in `public/globinplus-logo.png`)
+- Custom SVG blood droplet, red blood cells, ECG, and blood-bag illustrations
+- Navbar, hero, about, resources, donation guide, impact, community CTA and footer
+- Smooth CSS motion and scroll-triggered reveal effects with reduced-motion support
+- React Router routes for resource exploration, camps, donor info, login and sign up
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Important
+
+This is a **frontend prototype**. The feature destinations and authentication pages currently show clear "coming soon" informational screens rather than pretending to provide verified real-time blood inventory or live authentication.
+
+Framer Motion was not installed because the package registry was unavailable in the editing environment; lightweight CSS animations and IntersectionObserver are used instead. The original Vite/Tailwind/Lucide/Router dependencies are preserved. Install Framer Motion separately if you want it for future development.
